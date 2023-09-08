@@ -6,7 +6,7 @@
     --button-color: #2E4F4F;
     --button-hover-color: #0E8388;
     --text-color: #CBE4DE;
-    --screen-background-color: #f0f0f0;
+    --screen-background-color: #EEEEEE;
 }
 
 * {
@@ -26,6 +26,7 @@ button {
     border: none;
     padding: 0;
 }
+
 .container {
     width: 100%;
     max-width: 1200px;
@@ -36,32 +37,43 @@ button {
     min-height: 100vh;
 }
 
-
 /* CALCULATOR */
 
 .calculator {
     width: 350px;
     height: 500px;
     display: grid;
-    grid-template: minmax(120px, auto) repeat(5, 1fr) / repeat(4, 1fr);
-    grid-gap: 10px;
+    grid-template: minmax(100px, auto) repeat(5, 1fr) / repeat(4, 1fr);
+    grid-gap: 12px;
     background-color: var(--background-color);
     border-radius: 16px;
     padding: 20px;
-    box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
+    box-shadow: 0 10px 20px rgba(37, 37, 37, 0.95)
 }
 
 .calculatorDisplay {
     grid-column: 1 / -1;
-    font-size: 1rem;
-    font-weight: 700;
-    color: var(--text-color);
+    font-size: 2rem;
+    font-weight: 400;
+    color: var(--background-color);
     background-color: var(--screen-background-color);
     border-radius: 4px;
     display: flex;
-    align-items: center;
-    justify-content: flex-end;
-    margin-bottom: 4px;
+    flex-direction: column;
+    align-items: flex-end;
+    justify-content: space-around;
+    padding: 10px;
+    word-wrap: break-word;
+    word-break: break-all;
+    box-shadow: inset 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+.inputDisplay {
+    font-size: 1.4rem;
+}
+
+.resultDisplay {
+    font-size: 1.9rem;
 }
 
 .btnContainer {
@@ -74,8 +86,28 @@ button {
     border-radius: 4px;
     font-size: 1.5rem;
     font-weight: 700;
+    box-shadow: 0 2px 2px rgba(0, 0, 0, 0.3);
+    transition: all 1s cubic-bezier(0.075, 0.82, 0.165, 1);
+}
+
+.btn:hover {
+    background-color: var(--button-hover-color);
+    scale: 0.91;
+    font-size: 1.3rem;
 }
 
 .equals {
     grid-column: span 2;
+}
+
+.equals:hover {
+    background-color: rgba(81, 255, 154, 0.712);
+}
+
+.operation:hover {
+    background-color: rgb(0 226 255 / 76%);
+}
+
+#clear:hover, #delete:hover {
+    background-color: #FF5733;
 }
