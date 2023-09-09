@@ -8,9 +8,9 @@ const calcOperators = document.querySelectorAll(
 );
 const deleteBtn = document.querySelector('[data-fn="delete"]');
 
-let firstNumber = null;
-let secondNumber = null;
-let operator = null;
+let firstNumber = undefined;
+let secondNumber = undefined;
+let operator = undefined;
 let currentInput = "";
 const operatorRegex = /[+\-x÷%]/;
 
@@ -54,10 +54,43 @@ function updateDisplay(e) {
   const value = e.target.dataset.num || e.target.dataset.operator;
   if (!value) return;
 
-  // if(value === '%') return 
-  if (value === '=') {
-    if (!firstNumber || !operator) return;
+  //if the user clicks on the percentage sign and there is a number in the display calculate the percentage and display it in the input display
+  // if (value === "%" && currentInput) {
+  //   const percentage = operate(value, +currentInput);
+  //   inputDisplay.textContent = percentage;
+  //   currentInput = percentage;
+  //   operator = null;
+  //   return;
+  // }
+
+  // prevent displaying equal sign 
+  if (value === "=") return;
+
+  // Prevent displaying multiple operators
+  if (operatorRegex.test(value) && operatorRegex.test(currentInput.slice(-2))) return;
+
+
+  // Clear the display if the previous result is displayed
+  if (resultDisplay.textContent && value !== "=" && !operatorRegex.test(value)) {
+    clearDisplay();
   }
+
+  // Display the previous result as the first number if user clicks on a operator
+  if (resultDisplay.textContent && operatorRegex.test(value)) {
+    inputDisplay.textContent = resultDisplay.textContent.replace("= ", "");
+    resultDisplay.textContent = "";
+    currentInput = inputDisplay.textContent;
+    nullifyValues();
+  }
+
+  // Prevent displaying multiple zeros
+  if (value === "0" && !currentInput) return;
+  
+  // Prevent displaying operator as first input
+  if(operatorRegex.test(value) && !currentInput) return
+
+  // Prevent multiple decimals
+  if (value === "." && currentInput.includes(".")) return;
 
   // Add a space before and after operators
   if (operatorRegex.test(value)) {
@@ -80,8 +113,21 @@ function clearDisplay() {
   currentInput = "";
 }
 
+function nullifyValues() {
+  firstNumber = null;
+  secondNumber = null;
+  operator = null;
+}
+
 function deleteLast() {
   if (!currentInput) return;
+  if (resultDisplay.textContent) {
+    inputDisplay.textContent = resultDisplay.textContent.replace("= ", "");
+    resultDisplay.textContent = "";
+    currentInput = inputDisplay.textContent;
+    nullifyValues();
+    return
+  }
   const lastChar = currentInput.trimEnd().slice(-1);
 
   currentInput = currentInput.trimEnd().slice(0, -1);
@@ -94,19 +140,30 @@ function deleteLast() {
 }
 
 function setOperator(e) {
+  if (!currentInput) return;
+  if (operator) return;
   operator = e.target.dataset.operator;
 }
 
 function calculate() {
+  if(resultDisplay.textContent) return console.log("cal ran");
   if (!operator) return;
 
-  const numbers = currentInput.split(operatorRegex).map((num) => +num);
-  console.log(numbers);
+  const numbers = currentInput.split(operatorRegex).map((num) => {
+    // Check if the 'num' is empty or contains only whitespace
+    if (num.trim() === "") {
+      return 1; // Replace empty or whitespace with 1
+    } else {
+      return +num; // Convert the other values to numbers
+    }
+  });
+  
   firstNumber = numbers[0];
   secondNumber = numbers[1];
 
   const result = operate(operator, firstNumber, secondNumber);
   resultDisplay.textContent = `= ${result}`
+
 }
 
 
